@@ -10,3 +10,7 @@ sls invoke local --function hello --path event.json
 ## Log info? 
 sls invoke --function hello --log
 
+## Remove the service
+sls remove
+
+
