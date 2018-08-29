@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: hello-serverless # NOTE: update this with your service name
+service: testPermissions # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -29,14 +29,16 @@ provider:
 #  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
+  iamRoleStatements:
 #    - Effect: "Allow"
 #      Action:
 #        - "s3:ListBucket"
 #      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+        - "s3:GteObject"
+      Resource: "arn:aws:s3:::com.peex.test"
 #      Resource:
 #        Fn::Join:
 #          - ""
@@ -49,17 +51,20 @@ provider:
 #    variable1: value1
 
 # you can add packaging information here
-#package:
+package:
 #  include:
 #    - include-me.js
 #    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
-
+  exclude:
+    - package.json
+    - event.json
+    - tests/**
+    - LICENSE
+    - EO-Notes.md
+  
 functions:
-  hello:
-    handler: handler.hello
+  testPermissions:
+    handler: handler.testPermissions
     events: 
       - http: GET hello-serverless/resource
 

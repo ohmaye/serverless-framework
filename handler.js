@@ -1,20 +1,30 @@
 'use strict';
 
-module.exports.hello = async (event, context, callback) => {
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*"
-    },
-    body: JSON.stringify({
-      message: `Hello, ${event.queryStringParameters.name}!`
-    }),
+module.exports.testPermissions = (event, context, callback) => {
+      
+  const AWS = require('aws-sdk');
+  const s3 = new AWS.S3();
+  const bucket = 'com.peex.test';
+  const key = 'my-file-name';
+  const write = { 
+    Bucket: bucket, 
+    Key: key, 
+    Body: 'Test' 
   };
 
-  callback(null, response);
+  s3.putObject(write, (err, data) => {
+    if (err) return callback(err);
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
+    const read = { Bucket: bucket, Key: key };
+    s3.getObject(read, (err, data) => {
+      if (err) return callback(err);
+
+      const response = {
+        statusCode: 200,   
+        body: data.Body.toString()
+      };
+
+      callback(null, response);
+    });
+  });
 };
-
-
