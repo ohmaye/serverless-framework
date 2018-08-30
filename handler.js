@@ -1,30 +1,25 @@
 'use strict';
+module.exports.hello = (event, context, callback) => {
 
-module.exports.testPermissions = (event, context, callback) => {
-      
-  const AWS = require('aws-sdk');
-  const s3 = new AWS.S3();
-  const bucket = 'com.peex.test';
-  const key = 'my-file-name';
-  const write = { 
-    Bucket: bucket, 
-    Key: key, 
-    Body: 'Test' 
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Page Title</title>
+      </head>
+      <body>
+        <h1>Hello</h1>
+      </body>
+    </html>`;
+
+  const response = {    
+    statusCode: 200, 
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'text/html'
+    }, 
+    body: html
   };
 
-  s3.putObject(write, (err, data) => {
-    if (err) return callback(err);
-
-    const read = { Bucket: bucket, Key: key };
-    s3.getObject(read, (err, data) => {
-      if (err) return callback(err);
-
-      const response = {
-        statusCode: 200,   
-        body: data.Body.toString()
-      };
-
-      callback(null, response);
-    });
-  });
+  callback(null, response);
 };
